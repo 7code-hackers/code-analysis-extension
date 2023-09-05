@@ -1,5 +1,5 @@
 import cssText from "data-text:~style.css"
-import type { PlasmoCSConfig, PlasmoGetOverlayAnchor } from "plasmo"
+import type { PlasmoCSConfig, PlasmoGetInlineAnchor  } from "plasmo"
 import { useState } from "react"
 
 //tailwind css
@@ -13,9 +13,9 @@ export const config: PlasmoCSConfig = {
   matches: ["https://github.com/*"]
 }
 
-export const getInlineAnchor: PlasmoGetOverlayAnchor = () =>
+export const getInlineAnchor: PlasmoGetInlineAnchor  = () =>
   document.querySelector(
-    `[data-line-number="10"]`
+    `#repo-content-pjax-container > react-app > div > div > div.Box-sc-g0xbh4-0.fSWWem > div > div > main > div.Box-sc-g0xbh4-0.hlUAHL > div > div:nth-child(3) > div.Box-sc-g0xbh4-0.kLxXov`
   )
 
 // Use this to optimize unmount lookups
@@ -32,7 +32,7 @@ const PlasmoInline = () => {
         type="button"
         onClick={showCommentHandler}
         className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">
-        comment
+        comment3
       </button>
       {showComment && (
         <div>
