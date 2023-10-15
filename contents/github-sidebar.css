@@ -1,8 +1,8 @@
 #sidebar {
     position: absolute;
   
-    background-color: #1b141d;
-    width: var(--plasmo-google-sidebar-width);
+    background-color: white;
+    width: var(--plasmo-sidebar-width);
     height: 100vh;
   
     display: flex;
@@ -14,7 +14,7 @@
   }
   
   #sidebar.open {
-    left: calc(var(--plasmo-google-sidebar-width) * -1);
+    left: calc(var(--plasmo-sidebar-width) * -1);
   }
   
   #sidebar.closed {
