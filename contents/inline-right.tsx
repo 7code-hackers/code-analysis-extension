@@ -1,13 +1,6 @@
-import cssText from "data-text:~style.css";
-import type { PlasmoCSConfig, PlasmoGetInlineAnchor, PlasmoGetInlineAnchorList, PlasmoGetShadowHostId } from "plasmo";
-
-
-
-import { useStorage } from "@plasmohq/storage/hook";
-
-
-
-
+import cssText from "data-text:~style.css"
+import type { PlasmoCSConfig, PlasmoGetInlineAnchorList } from "plasmo"
+import { useStorage } from "@plasmohq/storage/hook"
 
 //tailwind css
 export const getStyle = () => {
@@ -28,10 +21,10 @@ export const getInlineAnchorList: PlasmoGetInlineAnchorList = async () =>
 
 const InlineRight = (prop) => {
   const [showSidebar, setShowSidebar] = useStorage("shown", false)
-  const [currentCode,setCurrentCode] = useStorage("currentCode","");
-  //const [showComment, setShowComment] = useState(false)
+  const [currentCode, setCurrentCode] = useStorage("currentCode", "")
   //console.log(prop.anchor.element)
-  const anchorElement = prop.anchor.element;
+
+  const anchorElement = prop.anchor.element
   let currentString = ""
   const spanElements = anchorElement.getElementsByTagName("span")
   for (let j = 0; j < spanElements.length; j++) {
@@ -39,15 +32,29 @@ const InlineRight = (prop) => {
     const dataCodeTextValue = spanElement.getAttribute("data-code-text")
     currentString += dataCodeTextValue
   }
+
   //console.log(currentString);
   function showCommentHandler(e) {
     console.log(e.target.parentNode.parentNode.parentNode.parentNode.parentNode)
     setShowSidebar(!showSidebar)
-    setCurrentCode(currentString);
+    setCurrentCode(currentString)
   }
+
+  function mouseEnterHandler(e) {
+    anchorElement.style.backgroundColor = "powderblue"
+  }
+
+  function mouseLeaveHandler(e) {
+    anchorElement.style.backgroundColor = "white"
+  }
+
   return (
     <div style={{ pointerEvents: "auto" }} className="mr-4">
-      <button type="button" onClick={showCommentHandler}>
+      <button
+        type="button"
+        onClick={showCommentHandler}
+        onMouseEnter={mouseEnterHandler}
+        onMouseLeave={mouseLeaveHandler}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
