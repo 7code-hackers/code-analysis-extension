@@ -24,6 +24,7 @@ const InlineRight = (prop) => {
   const [currentCode, setCurrentCode] = useStorage("currentCode", "")
   //console.log(prop.anchor.element)
 
+  //get the anchor element and the code in that line
   const anchorElement = prop.anchor.element
   let currentString = ""
   const spanElements = anchorElement.getElementsByTagName("span")
@@ -33,14 +34,15 @@ const InlineRight = (prop) => {
     currentString += dataCodeTextValue
   }
 
-  //console.log(currentString);
+  console.log(currentString);
   function showCommentHandler(e) {
-    console.log(e.target.parentNode.parentNode.parentNode.parentNode.parentNode)
+    //open the side bar and pass the current code to the sidebar
     setShowSidebar(!showSidebar)
     setCurrentCode(currentString)
   }
 
   function mouseEnterHandler(e) {
+    //the highlight color
     anchorElement.style.backgroundColor = "powderblue"
   }
 
