@@ -21,10 +21,17 @@ export const getStyle = () => {
 export const getShadowHostId = () => "plasmo-sidebar"
 
 const Sidebar = () => {
-  const[shown,setShown] = useStorage("shown",(v) => v === undefined ? false: v);
-  const[currentCode] = useStorage("currentCode");
-  
-  function keyDownHandler(e){
+  const [shown, setShown] = useStorage("shown", (v) => v === undefined ? false : v);
+  const [currentCode] = useStorage("currentCode");
+  const testAPI = async () => {
+    debugger
+    const response = await fetch(`http://localhost:3000/api/users`, {
+      method: 'GET',
+      credentials: 'include'
+    });
+    const data = await response.json();
+  }
+  function keyDownHandler(e) {
     e.stopPropagation()
   }
   useEffect(() => {
@@ -36,11 +43,12 @@ const Sidebar = () => {
       <p>Code</p>
       <div>{currentCode}</div>
       <p>Leave a comment</p>
+      <button onClick={testAPI}> testtt </button>
 
       <br></br>
-      <input data-componet="input" role="combobox"  type="textarea" onKeyDown={keyDownHandler} ></input>
+      <input data-componet="input" role="combobox" type="textarea" onKeyDown={keyDownHandler} ></input>
       <br></br>
-      <button onClick={()=>setShown(false)}>close</button>
+      <button onClick={() => setShown(false)}>close</button>
     </div>
   )
 }
