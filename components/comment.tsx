@@ -12,12 +12,12 @@ function CommentComponet({comment}) {
     <div>
       <div className="border rounded-md p-3 ml-3 my-3">
         <div className="flex gap-3 items-center">
-          {/* <img
-            src="../assets/icon.png"
+          <img
+            src={comment.avatar}
             className="object-cover w-8 h-8 rounded-full 
                             border-2 border-emerald-400  shadow-emerald-400
                             "
-          /> */}
+          />
 
           <h3 className="font-bold">{comment.userName}</h3>
         </div>

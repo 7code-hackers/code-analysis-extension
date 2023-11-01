@@ -1,27 +1,15 @@
-import cssText from "data-text:~/contents/github-sidebar.css";
-import type { PlasmoCSConfig } from "plasmo";
-import { useEffect, useState } from "react";
+import cssText from "data-text:~/contents/github-sidebar.css"
+import type { PlasmoCSConfig } from "plasmo"
+import { useEffect, useState } from "react"
 
-
-
-import { useStorage } from "@plasmohq/storage/hook";
-
-
+import { useStorage } from "@plasmohq/storage/hook"
 
 // Inject to the webpage itself
-import "./github-sidebar-base.css";
+import "./github-sidebar-base.css"
 
+import axios from "axios"
 
-
-import axios from "axios";
-
-
-
-import CommentComponet from "~components/comment";
-
-
-
-
+import CommentComponet from "~components/comment"
 
 export const config: PlasmoCSConfig = {
   matches: ["https://github.com/*"]
@@ -41,8 +29,15 @@ const Sidebar = () => {
     v === undefined ? false : v
   )
   const [currentCode] = useStorage("currentCode")
-  const [commentsList,setCommentsList] = useState([]);
-  const [commentValue,setCommentValue] = useState("");
+  const [commentsList, setCommentsList] = useState([])
+  const [commentValue, setCommentValue] = useState("")
+  const [errorMsg, setErrorMsg] = useState("")
+  const [currentSession] = useStorage("currentSession")
+  const [explanation, setExpanation] = useState(" ")
+  const [explanationId, setexplanationId] = useState("")
+  const currentUrl = window.location.href
+  //console.log("cur loca " + currentUrl)
+
   // const testAPI = async () => {
 
   //   const response = await fetch(`http://localhost:5000/api/users`, {
@@ -68,13 +63,60 @@ const Sidebar = () => {
 
   function postCommentHandler(e) {
     e.preventDefault()
-    setCommentsList((pre)=>{
-      return[...pre,{
-        userName:"user1",
-        content:commentValue
-      }]
-    })
+    if (JSON.stringify(currentSession) === "{}") {
+      setErrorMsg("You must login to comment")
+    } else {
+      setCommentsList((pre) => {
+        return [
+          ...pre,
+          {
+            userName: currentSession.user.name,
+            content: commentValue,
+            avatar: currentSession.user.image
+          }
+        ]
+      })
+      axios
+        .post(
+          `http://localhost:3001/api/comment`,
+          {
+            userId: "06b4c9a4-aea9-4e87-9de4-8972ea284b34",
+            content: commentValue,
+            explanationId: explanationId
+          },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          console.log(res)
+        })
+        .catch(function (error) {
+          console.log(error.config)
+        })
+    }
+
     setCommentValue("")
+  }
+
+  function explanationHandler() {
+    setExpanation("some explanation")
+    axios
+      .post(
+        `http://localhost:3001/api/explanation`,
+        {
+          userId: "06b4c9a4-aea9-4e87-9de4-8972ea284b34",
+          content: explanation,
+          visibility: "string",
+          location: currentUrl
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        console.log(res)
+        setexplanationId(res.data.id)
+      })
+      .catch(function (error) {
+        console.log(error.config)
+      })
   }
 
   useEffect(() => {
@@ -85,6 +127,12 @@ const Sidebar = () => {
     <div id="sidebar" className={shown ? "open" : "closed"}>
       <p>Code</p>
       <div>{currentCode}</div>
+      <button
+        onClick={explanationHandler}
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Explan
+      </button>
+      {explanation}
       <p>Leave a comment</p>
       <button onClick={testAPI}> testtt </button>
 
@@ -101,10 +149,9 @@ const Sidebar = () => {
 
         <form onSubmit={postCommentHandler}>
           <div className="flex flex-col">
-            {commentsList.map((comment)=>(
-              <CommentComponet comment={comment}/>
+            {commentsList.map((comment) => (
+              <CommentComponet comment={comment} />
             ))}
-            
           </div>
 
           <div className="w-full px-3 my-2">
@@ -114,14 +161,16 @@ const Sidebar = () => {
               placeholder="Type Your Comment"
               onKeyDown={keyDownHandler}
               value={commentValue}
-              onChange={(e)=>{setCommentValue(e.target.value)}}
+              onChange={(e) => {
+                setCommentValue(e.target.value)
+              }}
               required></textarea>
           </div>
 
           <div className="w-full flex justify-end px-3">
             <input
               type="submit"
-              className="px-2.5 py-1.5 rounded-md text-white text-sm bg-indigo-500"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               value="Post Comment"
             />
           </div>
