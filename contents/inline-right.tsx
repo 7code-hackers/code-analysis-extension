@@ -34,7 +34,7 @@ const InlineRight = (prop) => {
     currentString += dataCodeTextValue
   }
 
-  console.log(currentString);
+  //console.log(currentString);
   function showCommentHandler(e) {
     //open the side bar and pass the current code to the sidebar
     setShowSidebar(!showSidebar)
