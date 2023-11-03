@@ -35,14 +35,14 @@ function IndexPopup() {
       {!currentSession || JSON.stringify(currentSession) === "{}" ? (
         <div>
           <h2>please sign in</h2>
-          <a href="http://localhost:3000/" target="_blank">
+          <a href={process.env.PLASMO_PUBLIC_FRONTEND_URL} target="_blank">
             Sign In
           </a>
         </div>
       ) : (
         <div>
           <div>Hello {currentSession.user.name}</div>
-          <a href="http://localhost:3000/" target="_blank">
+          <a href={process.env.PLASMO_PUBLIC_FRONTEND_URL} target="_blank">
             Dashboard
           </a>
         </div>

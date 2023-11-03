@@ -1,15 +1,27 @@
-import cssText from "data-text:~/contents/github-sidebar.css"
-import type { PlasmoCSConfig } from "plasmo"
-import { useEffect, useState } from "react"
+import cssText from "data-text:~/contents/github-sidebar.css";
+import type { PlasmoCSConfig } from "plasmo";
+import { useEffect, useState } from "react";
 
-import { useStorage } from "@plasmohq/storage/hook"
+
+
+import { useStorage } from "@plasmohq/storage/hook";
+
+
 
 // Inject to the webpage itself
-import "./github-sidebar-base.css"
+import "./github-sidebar-base.css";
 
-import axios from "axios"
 
-import CommentComponet from "~components/comment"
+
+import axios from "axios";
+
+
+
+import CommentComponet from "~components/comment";
+
+
+
+
 
 export const config: PlasmoCSConfig = {
   matches: ["https://github.com/*"]
@@ -49,7 +61,9 @@ const Sidebar = () => {
 
   function testAPI() {
     axios
-      .get(`http://localhost:5000/api/users`, { withCredentials: true })
+      .get(`${process.env.PLASMO_PUBLIC_BACKEND_URL}users`, {
+        withCredentials: true
+      })
       .then((res) => {
         console.log(res)
       })
@@ -78,9 +92,9 @@ const Sidebar = () => {
       })
       axios
         .post(
-          `http://localhost:3001/api/comment`,
+          `${process.env.PLASMO_PUBLIC_BACKEND_URL}comment`,
           {
-            userId: "06b4c9a4-aea9-4e87-9de4-8972ea284b34",
+            userId: "553f50a7-4abc-46d6-a0ff-3e7c065da5dc",
             content: commentValue,
             explanationId: explanationId
           },
@@ -101,9 +115,9 @@ const Sidebar = () => {
     setExpanation("some explanation")
     axios
       .post(
-        `http://localhost:3001/api/explanation`,
+        `${process.env.PLASMO_PUBLIC_BACKEND_URL}explanation`,
         {
-          userId: "06b4c9a4-aea9-4e87-9de4-8972ea284b34",
+          userId: "553f50a7-4abc-46d6-a0ff-3e7c065da5dc",
           content: explanation,
           visibility: "string",
           location: currentUrl
@@ -121,29 +135,29 @@ const Sidebar = () => {
 
   useEffect(() => {
     document.body.classList.toggle("plasmo-sidebar-show", shown)
+    setCommentsList([])
   }, [shown])
 
   return (
-    <div id="sidebar" className={shown ? "open" : "closed"}>
+    <div
+      id="sidebar"
+      className={(shown ? "open" : "closed") + " overflow-auto "}>
       <p>Code</p>
+      <br></br>
       <div>{currentCode}</div>
+      <br></br>
       <button
         onClick={explanationHandler}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         Explan
       </button>
       {explanation}
+      <br></br>
       <p>Leave a comment</p>
-      <button onClick={testAPI}> testtt </button>
 
       <br></br>
-      <input
-        data-componet="input"
-        role="combobox"
-        type="textarea"
-        onKeyDown={keyDownHandler}></input>
+
       <br></br>
-      <button onClick={() => setShown(false)}>close</button>
       <div className="w-full bg-white rounded-lg border p-2 my-4 mx-6">
         <h3 className="font-bold">Discussion</h3>
 
@@ -176,6 +190,27 @@ const Sidebar = () => {
           </div>
         </form>
       </div>
+      <button
+        type="button"
+        onClick={() => setShown(false)}
+        className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+        <span className="sr-only">Close menu</span>
+        {/* <!-- Heroicon name: outline/x --> */}
+        <svg
+          className="h-6 w-6"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          aria-hidden="true">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
     </div>
   )
 }
