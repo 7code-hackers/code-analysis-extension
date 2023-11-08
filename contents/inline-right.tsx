@@ -1,5 +1,8 @@
+import axios from "axios"
 import cssText from "data-text:~style.css"
 import type { PlasmoCSConfig, PlasmoGetInlineAnchorList } from "plasmo"
+import { useEffect } from "react"
+
 import { useStorage } from "@plasmohq/storage/hook"
 
 //tailwind css
@@ -22,6 +25,11 @@ export const getInlineAnchorList: PlasmoGetInlineAnchorList = async () =>
 const InlineRight = (prop) => {
   const [showSidebar, setShowSidebar] = useStorage("shown", false)
   const [currentCode, setCurrentCode] = useStorage("currentCode", "")
+  const [currentCodeLine, setCurrentCodeLine] = useStorage(
+    "currentCodeLine",
+    -1
+  )
+  
   //console.log(prop.anchor.element)
 
   //get the anchor element and the code in that line
@@ -34,11 +42,19 @@ const InlineRight = (prop) => {
     currentString += dataCodeTextValue
   }
 
+  //get the current line
+  const divElement = anchorElement.firstChild
+  //console.log(divElement)
+  const currentLine = divElement.getAttribute("data-line-number")
+  //console.log(currentLine)
   //console.log(currentString);
+  
+
   function showCommentHandler(e) {
-    //open the side bar and pass the current code to the sidebar
+    //open the side bar and pass the current code and line number to the sidebar
     setShowSidebar(!showSidebar)
     setCurrentCode(currentString)
+    setCurrentCodeLine(currentLine)
   }
 
   function mouseEnterHandler(e) {
