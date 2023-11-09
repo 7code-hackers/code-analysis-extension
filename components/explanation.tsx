@@ -1,6 +1,9 @@
-import cssText from "data-text:~style.css"
+import cssText from "data-text:~style.css";
+import { useState } from "react";
 
-import { useStorage } from "@plasmohq/storage/hook"
+
+
+
 
 //tailwind css
 export const getStyle = () => {
@@ -9,20 +12,50 @@ export const getStyle = () => {
   return style
 }
 
-function ExplanationComponet({ explanation, onRemove }) {
+function ExplanationComponet({ explanation, onRemove, onEdit }) {
   console.log(explanation.id)
+  const [editMode, setEditMode] = useState(false)
+  const [editValue, setEditvalue] = useState(explanation.content)
   return (
     <div>
       <div className="flex justify-between border rounded-md p-3 ml-3 my-3">
         <div className="p-3">
-          <p className="text-gray-600 mt-2">{explanation.content}</p>
-          <p>line start : {explanation.lineStart}</p>
+          {editMode ? (
+            <div>
+              <form
+                onSubmit={(ev) => {
+                  ev.preventDefault()
+                  setEditMode((pre) => !pre)
+                  onEdit(editValue, explanation.id)
+                }}>
+                <input type="text" value={editValue} onChange={(e) => {
+              setEditvalue(e.target.value)
+            }}></input>
+                <button
+                  type="submit"
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-3 rounded">
+                  Done
+                </button>
+              </form>
+            </div>
+          ) : (
+            <div>
+              <p className="text-gray-600 mt-2">{explanation.content}</p>
+              <button
+                onClick={() => setEditMode(!editMode)}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-3 rounded">
+                Edit
+              </button>
+            </div>
+          )}
+
           <button
             onClick={() => onRemove(explanation.id)}
             className="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             Delete
           </button>
         </div>
+        {/* <p>line start : {explanation.lineStart}</p> */}
         <div className="flex flex-col items-end gap-3 pr-3 py-3">
           <div>
             <svg

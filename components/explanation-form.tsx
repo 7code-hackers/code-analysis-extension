@@ -77,6 +77,29 @@ function ExplanationForm({ setexplanationId, shown }) {
     setExpanationValue("")
   }
 
+  function editHandler(explanationIndex, newCont, explanationId) {
+    axios
+      .put(
+        `${process.env.PLASMO_PUBLIC_BACKEND_URL}explanation/${explanationId}`,
+        {
+          content: newCont,
+          visibility: "public"
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        console.log(res)
+        setCurrentExplanationList((pre) => {
+          const newExplanations = [...pre]
+          console.log(newExplanations[explanationIndex])
+          newExplanations[explanationIndex].content = newCont
+          return newExplanations
+        })
+      })
+      .catch(function (error) {
+        console.log(error.config)
+      })
+  }
   function removeHandler(explanationId) {
     axios
       .delete(
@@ -101,6 +124,9 @@ function ExplanationForm({ setexplanationId, shown }) {
         {currentExplanationList.map((explanation, index) => (
           <ExplanationComponet
             onRemove={removeHandler}
+            onEdit={(newCont, explanationID) =>
+              editHandler(index, newCont, explanationID)
+            }
             explanation={explanation}></ExplanationComponet>
         ))}
       </div>
