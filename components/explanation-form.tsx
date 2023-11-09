@@ -85,6 +85,9 @@ function ExplanationForm({ setexplanationId, shown }) {
       )
       .then((res) => {
         console.log(res)
+        setCurrentExplanationList((pre) =>
+          pre.filter((exp) => exp.id !== explanationId)
+        )
       })
       .catch(function (error) {
         console.log(error.config)
@@ -101,7 +104,7 @@ function ExplanationForm({ setexplanationId, shown }) {
             explanation={explanation}></ExplanationComponet>
         ))}
       </div>
-     
+
       <form onSubmit={explanationHandler}>
         <div className="w-full px-3 my-2">
           <textarea
