@@ -8,6 +8,7 @@ import { useStorage } from "@plasmohq/storage/hook"
 import "./github-sidebar-base.css"
 
 import axios from "axios"
+
 import CommentForm from "~components/comment-form"
 import ExplanationForm from "~components/explanation-form"
 
@@ -29,42 +30,116 @@ const Sidebar = () => {
     v === undefined ? false : v
   )
   const [currentCode] = useStorage("currentCode")
-  const [commentsList, setCommentsList] = useState([])
-  
-  const [explanation, setExpanation] = useState(" ")
+  // const [commentsList, setCommentsList] = useState([])
   const [explanationId, setexplanationId] = useState("")
-  const currentUrl = window.location.href
+  const [showComments, setShowComments] = useState(false)
   //console.log("cur loca " + currentUrl)
-
+  const [currentExplanationList, setCurrentExplanationList] = useState([])
+  const currentUrl = window.location.href
+  const [currentCodeLine] = useStorage("currentCodeLine")
+  const [explanationIndex, setExplanationIndex] = useState(0)
   function keyDownHandler(e) {
     e.stopPropagation()
   }
 
   useEffect(() => {
     document.body.classList.toggle("plasmo-sidebar-show", shown)
-    setCommentsList([])
+    axios
+      .get(
+        `${
+          process.env.PLASMO_PUBLIC_BACKEND_URL
+        }explanations/file/${encodeURIComponent(currentUrl)}`,
+        {
+          withCredentials: true
+        }
+      )
+      .then((res) => {
+        const resList = res.data.filter(
+          (explanation) => explanation.lineStart == currentCodeLine
+        )
+        setCurrentExplanationList(resList)
+        console.log("current list")
+        console.log(currentExplanationList)
+      })
+      .catch(function (error) {
+        console.log(error.config)
+      })
   }, [shown])
 
+  function editHandler(explanationIndex, newCont, explanationId) {
+    axios
+      .put(
+        `${process.env.PLASMO_PUBLIC_BACKEND_URL}explanation/${explanationId}`,
+        {
+          content: newCont,
+          visibility: "public"
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        console.log(res)
+        setCurrentExplanationList((pre) => {
+          const newExplanations = [...pre]
+          console.log(newExplanations[explanationIndex])
+          newExplanations[explanationIndex].content = newCont
+          return newExplanations
+        })
+      })
+      .catch(function (error) {
+        console.log(error.config)
+      })
+  }
+  function removeHandler(explanationId) {
+    axios
+      .delete(
+        `${process.env.PLASMO_PUBLIC_BACKEND_URL}explanation/${explanationId}`,
+        { withCredentials: true }
+      )
+      .then((res) => {
+        console.log(res)
+        setCurrentExplanationList((pre) =>
+          pre.filter((exp) => exp.id !== explanationId)
+        )
+      })
+      .catch(function (error) {
+        console.log(error.config)
+      })
+  }
   return (
     <div
       id="sidebar"
-      className={(shown ? "open" : "closed") + " overflow-auto "}>
+      className={
+        (shown ? "open" : "closed") +
+        " overflow-y-auto p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+      }>
       <p>Code</p>
       <br></br>
       <div>{currentCode}</div>
-      <br></br>
-      <p>Generate Explanation</p>
-      <br></br>
-      <ExplanationForm shown={shown} setexplanationId={setexplanationId}></ExplanationForm>
-      <br></br>
-      <p>Leave a comment</p>
 
       <br></br>
 
-      <CommentForm
-        explanationId={explanationId}
-        commentsList={commentsList}
-        setCommentsList={setCommentsList}></CommentForm>
+      {showComments ? (
+        <CommentForm
+        showComments={showComments}
+          setShowComments={setShowComments}
+          currentExplanation={currentExplanationList[explanationIndex]}
+          explanationId={explanationId}
+          removeHandler={removeHandler}
+          editHandler={editHandler}
+          explanationIndex={explanationIndex}></CommentForm>
+      ) : (
+        <ExplanationForm
+          shown={shown}
+          showComments={showComments}
+          setShowComments={setShowComments}
+          setexplanationId={setexplanationId}
+          currentExplanationList={currentExplanationList}
+          setCurrentExplanationList={setCurrentExplanationList}
+          setExplanationIndex={setExplanationIndex}
+          editHandler={editHandler}
+          removeHandler={removeHandler}></ExplanationForm>
+      )}
+
       <button
         type="button"
         onClick={() => setShown(false)}

@@ -12,7 +12,7 @@ function CommentComponet({ comment }) {
     <div>
       <div className="flex justify-between border rounded-md p-3 ml-3 my-3">
         <div className="p-3">
-        <div className="flex gap-3 items-center">
+        {/* <div className="flex gap-3 items-center">
           <img
             src={comment.avatar}
             className="object-cover w-8 h-8 rounded-full 
@@ -21,7 +21,7 @@ function CommentComponet({ comment }) {
           />
 
           <h3 className="font-bold">{comment.userName}</h3>
-        </div>
+        </div> */}
 
         <p className="text-gray-600 mt-2">{comment.content}</p>
         </div>

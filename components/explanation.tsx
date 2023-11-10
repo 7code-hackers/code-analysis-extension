@@ -1,9 +1,5 @@
-import cssText from "data-text:~style.css";
-import { useState } from "react";
-
-
-
-
+import cssText from "data-text:~style.css"
+import { useState } from "react"
 
 //tailwind css
 export const getStyle = () => {
@@ -12,10 +8,18 @@ export const getStyle = () => {
   return style
 }
 
-function ExplanationComponet({ explanation, onRemove, onEdit }) {
+function ExplanationComponet({
+  explanation,
+  onRemove,
+  onEdit,
+  showComments,
+  setShowComments,
+  setExplanationIndex
+}) {
   console.log(explanation.id)
   const [editMode, setEditMode] = useState(false)
   const [editValue, setEditvalue] = useState(explanation.content)
+
   return (
     <div>
       <div className="flex justify-between border rounded-md p-3 ml-3 my-3">
@@ -28,9 +32,15 @@ function ExplanationComponet({ explanation, onRemove, onEdit }) {
                   setEditMode((pre) => !pre)
                   onEdit(editValue, explanation.id)
                 }}>
-                <input type="text" value={editValue} onChange={(e) => {
-              setEditvalue(e.target.value)
-            }}></input>
+                <textarea
+                  value={editValue}
+                  onKeyDown={(e) => {
+                    e.stopPropagation()
+                  }}
+                  onChange={(e) => {
+                    e.stopPropagation()
+                    setEditvalue(e.target.value)
+                  }}></textarea>
                 <button
                   type="submit"
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-3 rounded">
@@ -54,6 +64,14 @@ function ExplanationComponet({ explanation, onRemove, onEdit }) {
             className="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             Delete
           </button>
+          {!showComments&&<button
+            onClick={() => {
+              setShowComments(true)
+              setExplanationIndex()
+            }}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            See More
+          </button>}
         </div>
         {/* <p>line start : {explanation.lineStart}</p> */}
         <div className="flex flex-col items-end gap-3 pr-3 py-3">

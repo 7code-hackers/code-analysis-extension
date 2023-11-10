@@ -13,36 +13,20 @@ export const getStyle = () => {
   return style
 }
 
-function ExplanationForm({ setexplanationId, shown }) {
+function ExplanationForm({
+  setexplanationId,
+  shown,
+  setShowComments,
+  showComments,
+  currentExplanationList,
+  setCurrentExplanationList,
+  setExplanationIndex,
+  editHandler,
+  removeHandler
+}) {
   const [explanationValue, setExpanationValue] = useState("")
   const currentUrl = window.location.href
   const [currentCodeLine] = useStorage("currentCodeLine")
-  const [explanationList, setExpanationList] = useState([])
-  const [currentExplanationList, setCurrentExplanationList] = useState([])
-
-  useEffect(() => {
-    axios
-      .get(
-        `${
-          process.env.PLASMO_PUBLIC_BACKEND_URL
-        }explanations/file/${encodeURIComponent(currentUrl)}`,
-        {
-          withCredentials: true
-        }
-      )
-      .then((res) => {
-        setExpanationList(res.data)
-        const resList = explanationList.filter(
-          (explanation) => explanation.lineStart == currentCodeLine
-        )
-        setCurrentExplanationList(resList)
-        console.log("current list")
-        console.log(currentExplanationList)
-      })
-      .catch(function (error) {
-        console.log(error.config)
-      })
-  }, [shown])
 
   function keyDownHandler(e) {
     e.stopPropagation()
@@ -77,57 +61,22 @@ function ExplanationForm({ setexplanationId, shown }) {
     setExpanationValue("")
   }
 
-  function editHandler(explanationIndex, newCont, explanationId) {
-    axios
-      .put(
-        `${process.env.PLASMO_PUBLIC_BACKEND_URL}explanation/${explanationId}`,
-        {
-          content: newCont,
-          visibility: "public"
-        },
-        { withCredentials: true }
-      )
-      .then((res) => {
-        console.log(res)
-        setCurrentExplanationList((pre) => {
-          const newExplanations = [...pre]
-          console.log(newExplanations[explanationIndex])
-          newExplanations[explanationIndex].content = newCont
-          return newExplanations
-        })
-      })
-      .catch(function (error) {
-        console.log(error.config)
-      })
-  }
-  function removeHandler(explanationId) {
-    axios
-      .delete(
-        `${process.env.PLASMO_PUBLIC_BACKEND_URL}explanation/${explanationId}`,
-        { withCredentials: true }
-      )
-      .then((res) => {
-        console.log(res)
-        setCurrentExplanationList((pre) =>
-          pre.filter((exp) => exp.id !== explanationId)
-        )
-      })
-      .catch(function (error) {
-        console.log(error.config)
-      })
-  }
-
   return (
-    <div className="w-full bg-white rounded-lg border p-2 my-4 mx-6">
+    <div className="w-full bg-white rounded-lg border p-2 my-4 ">
       <h3 className="font-bold">Explanation</h3>
-      <div className="flex flex-col">
+      <div className="flex flex-col ">
         {currentExplanationList.map((explanation, index) => (
           <ExplanationComponet
+            showComments={showComments}
+            setShowComments={setShowComments}
             onRemove={removeHandler}
             onEdit={(newCont, explanationID) =>
               editHandler(index, newCont, explanationID)
             }
-            explanation={explanation}></ExplanationComponet>
+            explanation={explanation}
+            setExplanationIndex={() =>
+              setExplanationIndex(index)
+            }></ExplanationComponet>
         ))}
       </div>
 
