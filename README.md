@@ -36,4 +36,4 @@ The easiest way to deploy your Plasmo extension is to use the built-in [bpp](htt
 ```bash
 cp .env.example .env
 ```
-set PLASMO_PUBLIC_BACKEND_URL and PLASMO_PUBLIC_FRONTEND_URL to your corresponding backend URL and front end URL
+Set PLASMO_PUBLIC_BACKEND_URL and PLASMO_PUBLIC_FRONTEND_URL to your corresponding backend URL and front end URL
