@@ -43,7 +43,7 @@ function ExplanationComponet({
                   }}></textarea>
                 <button
                   type="submit"
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-3 rounded">
+                  className="text-xs bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-3 rounded">
                   Done
                 </button>
               </form>
@@ -53,7 +53,7 @@ function ExplanationComponet({
               <p className="text-gray-600 mt-2">{explanation.content}</p>
               <button
                 onClick={() => setEditMode(!editMode)}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-3 rounded">
+                className="text-xs bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-3 rounded">
                 Edit
               </button>
             </div>
@@ -61,7 +61,7 @@ function ExplanationComponet({
 
           <button
             onClick={() => onRemove(explanation.id)}
-            className="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            className="text-xs bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 mr-3 rounded">
             Delete
           </button>
           {!showComments&&<button
@@ -69,7 +69,7 @@ function ExplanationComponet({
               setShowComments(true)
               setExplanationIndex()
             }}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            className="text-xs bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             See More
           </button>}
         </div>

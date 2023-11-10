@@ -23,7 +23,7 @@ function CommentForm({
   editHandler,
   explanationIndex
 }) {
-  const [commentsList, setCommentsList] = useState([])
+  const [commentList, setCommentList] = useState([])
   const [commentValue, setCommentValue] = useState("")
   const [currentSession] = useStorage("currentSession")
   const [errorMsg, setErrorMsg] = useState("")
@@ -38,9 +38,9 @@ function CommentForm({
         }
       )
       .then((res) => {
-        setCommentsList(res.data)
+        setCommentList(res.data)
         console.log("current list")
-        console.log(commentsList)
+        console.log(commentList)
       })
       .catch(function (error) {
         console.log(error.config)
@@ -63,7 +63,7 @@ function CommentForm({
           { withCredentials: true }
         )
         .then((res) => {
-          setCommentsList((pre) => {
+          setCommentList((pre) => {
             return [...pre, res.data]
           })
           console.log(res)
@@ -77,6 +77,43 @@ function CommentForm({
   }
   function keyDownHandler(e) {
     e.stopPropagation()
+  }
+  function commentEditHandler(commentIndex, newCont, commentId) {
+    axios
+      .put(
+        `${process.env.PLASMO_PUBLIC_BACKEND_URL}Comment/${commentId}`,
+        {
+          content: newCont
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        console.log(res)
+        setCommentList((pre) => {
+          const newComments = [...pre]
+          console.log(newComments[commentIndex])
+          newComments[commentIndex].content = newCont
+          return newComments
+        })
+      })
+      .catch(function (error) {
+        console.log(error.config)
+      })
+  }
+  function commentRemoveHandler(commentId) {
+    axios
+      .delete(`${process.env.PLASMO_PUBLIC_BACKEND_URL}Comment/${commentId}`, {
+        withCredentials: true
+      })
+      .then((res) => {
+        console.log(res)
+        setCommentList((pre) =>
+          pre.filter((comment) => comment.id !== commentId)
+        )
+      })
+      .catch(function (error) {
+        console.log(error.config)
+      })
   }
   return (
     <div>
@@ -103,8 +140,14 @@ function CommentForm({
         <h3 className="font-bold">Discussion</h3>
 
         <div className="flex flex-col">
-          {commentsList.map((comment, key) => (
-            <CommentComponet comment={comment} />
+          {commentList.map((comment, key) => (
+            <CommentComponet
+              onRemove={commentRemoveHandler}
+              onEdit={(newCont, commentId) =>
+                commentEditHandler(key, newCont, commentId)
+              }
+              comment={comment}
+            />
           ))}
         </div>
         <form onSubmit={postCommentHandler}>
