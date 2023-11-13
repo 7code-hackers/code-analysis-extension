@@ -68,7 +68,7 @@ function ExplanationForm({
           <ExplanationComponet
             showComments={showComments}
             setShowComments={setShowComments}
-            onRemove={removeHandler}
+            onRemove={(explanationID)=>removeHandler(index,explanationID)}
             onEdit={(newCont, explanationID) =>
               editHandler(index, newCont, explanationID)
             }

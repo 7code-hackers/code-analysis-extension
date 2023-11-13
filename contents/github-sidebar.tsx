@@ -90,7 +90,7 @@ const Sidebar = () => {
         console.log(error.config)
       })
   }
-  function removeHandler(explanationId) {
+  function removeHandler(explanationIndex, explanationId) {
     axios
       .delete(
         `${process.env.PLASMO_PUBLIC_BACKEND_URL}explanation/${explanationId}`,
@@ -99,7 +99,7 @@ const Sidebar = () => {
       .then((res) => {
         console.log(res)
         setCurrentExplanationList((pre) =>
-          pre.filter((exp) => exp.id !== explanationId)
+          pre.filter((exp, index) => index !== explanationIndex)
         )
       })
       .catch(function (error) {

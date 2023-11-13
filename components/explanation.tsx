@@ -9,9 +9,9 @@ function ExplanationComponet({
   setShowComments,
   setExplanationIndex
 }) {
-  console.log(explanation)
+  console.log(explanation.content)
   const [editMode, setEditMode] = useState(false)
-  const [editValue, setEditvalue] = useState(explanation.content)
+  const [editValue, setEditvalue] = useState("")
 
   return (
     <div>
@@ -55,6 +55,24 @@ function ExplanationComponet({
                       stroke-linejoin="round">
                       <path stroke="none" d="M0 0h24v24H0z" />
                       <path d="M5 12l5 5l10 -10" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => setEditMode(false)}
+                    className="text-xs bg-gray-100 hover:bg-gray-200font-bold p-1  rounded">
+                    <svg
+                      className="h-4 w-4 text-blue-500"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      stroke-width="2"
+                      stroke="currentColor"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path stroke="none" d="M0 0h24v24H0z" />
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
                     </svg>
                   </button>
                   {!showComments && (
@@ -114,7 +132,10 @@ function ExplanationComponet({
                   </p>
                 </div>
                 <button
-                  onClick={() => setEditMode(!editMode)}
+                  onClick={() => {
+                    setEditMode(!editMode)
+                    setEditvalue(explanation.content)
+                  }}
                   className="text-xs bg-gray-100 hover:bg-gray-200  font-bold p-1 ml-auto rounded">
                   <svg
                     className="h-4 w-4 text-blue-500"

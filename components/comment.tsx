@@ -3,7 +3,7 @@ import { useState } from "react"
 
 function CommentComponet({ comment, onRemove, onEdit }) {
   const [editMode, setEditMode] = useState(false)
-  const [editValue, setEditvalue] = useState(comment.content)
+  const [editValue, setEditvalue] = useState("")
   return (
     <div>
       <div className="flex justify-between border rounded-md p-3 my-3">
@@ -14,7 +14,7 @@ function CommentComponet({ comment, onRemove, onEdit }) {
                 id="updateExplanationForm"
                 onSubmit={(ev) => {
                   ev.preventDefault()
-                  setEditMode((pre) => !pre)
+                  setEditMode(false)
                   onEdit(editValue, comment.id)
                 }}>
                 <div className="flex gap-3 items-center">
@@ -46,6 +46,24 @@ function CommentComponet({ comment, onRemove, onEdit }) {
                       stroke-linejoin="round">
                       <path stroke="none" d="M0 0h24v24H0z" />
                       <path d="M5 12l5 5l10 -10" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => setEditMode(false)}
+                    className="text-xs bg-gray-100 hover:bg-gray-200font-bold p-1  rounded">
+                    <svg
+                      className="h-4 w-4 text-blue-500"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      stroke-width="2"
+                      stroke="currentColor"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path stroke="none" d="M0 0h24v24H0z" />
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
                     </svg>
                   </button>
                   <button
@@ -103,7 +121,10 @@ function CommentComponet({ comment, onRemove, onEdit }) {
                   </p>
                 </div>
                 <button
-                  onClick={() => setEditMode(!editMode)}
+                  onClick={() => {
+                    setEditMode(true)
+                    setEditvalue(comment.content)
+                  }}
                   className="text-xs bg-gray-100 hover:bg-gray-200  font-bold p-1 ml-auto rounded">
                   <svg
                     className="h-4 w-4 text-blue-500"
