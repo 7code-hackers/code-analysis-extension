@@ -1,17 +1,9 @@
 import axios from "axios"
-import cssText from "data-text:~style.css"
 import { useEffect, useState } from "react"
 
 import { useStorage } from "@plasmohq/storage/hook"
 
 import ExplanationComponet from "./explanation"
-
-//tailwind css
-export const getStyle = () => {
-  const style = document.createElement("style")
-  style.textContent = cssText
-  return style
-}
 
 function ExplanationForm({
   setexplanationId,
@@ -27,7 +19,7 @@ function ExplanationForm({
   const [explanationValue, setExpanationValue] = useState("")
   const currentUrl = window.location.href
   const [currentCodeLine] = useStorage("currentCodeLine")
-
+  const [currentCode] = useStorage("currentCode")
   function keyDownHandler(e) {
     e.stopPropagation()
   }
@@ -62,8 +54,15 @@ function ExplanationForm({
   }
 
   return (
-    <div className="w-full bg-white rounded-lg border p-2 my-4 ">
-      <h3 className="font-bold">Explanation</h3>
+    <div className="w-full bg-white rounded-lg p-4 my-1 ">
+      <h2 className="font-bold text-black">Code</h2>
+      <br></br>
+      <div className="bg-gray-100 p-4 overflow-x-auto">
+        <p className="text-gray-700 font-mono">{currentCode}</p>
+      </div>
+
+      <br></br>
+      <h3 className="font-bold text-black">Explanation</h3>
       <div className="flex flex-col ">
         {currentExplanationList.map((explanation, index) => (
           <ExplanationComponet
@@ -83,7 +82,10 @@ function ExplanationForm({
       <form onSubmit={explanationHandler}>
         <div className="w-full px-3 my-2">
           <textarea
-            className="bg-gray-100 rounded border border-gray-400 leading-normal resize-none w-full h-20 py-2 px-3 font-medium placeholder-gray-700 focus:outline-none focus:bg-white"
+            className="block p-2.5 w-full h-20 text-sm text-gray-900 bg-gray-50 rounded-lg 
+            border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 
+            dark:border-gray-600 dark:placeholder-gray-400 dark:text-white 
+            dark:focus:ring-blue-500 dark:focus:border-blue-500"
             name="body"
             placeholder="Type Your Explanation"
             onKeyDown={keyDownHandler}
@@ -97,7 +99,7 @@ function ExplanationForm({
         <div className="w-full flex justify-end px-3">
           <input
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            className="bg-[#0258d7] hover:bg-blue-900 text-white font-bold py-2 px-4 rounded"
             value="Post Explanation"
           />
         </div>

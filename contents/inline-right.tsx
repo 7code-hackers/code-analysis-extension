@@ -1,7 +1,6 @@
-import axios from "axios"
+import button4 from "data-base64:~assets/button4.png"
 import cssText from "data-text:~style.css"
 import type { PlasmoCSConfig, PlasmoGetInlineAnchorList } from "plasmo"
-import { useEffect } from "react"
 
 import { useStorage } from "@plasmohq/storage/hook"
 
@@ -29,13 +28,14 @@ const InlineRight = (prop) => {
     "currentCodeLine",
     -1
   )
-  
+  const [lineStartList] = useStorage("lineStartList")
   //console.log(prop.anchor.element)
 
   //get the anchor element and the code in that line
   const anchorElement = prop.anchor.element
   let currentString = ""
   const spanElements = anchorElement.getElementsByTagName("span")
+
   for (let j = 0; j < spanElements.length; j++) {
     const spanElement = spanElements[j]
     const dataCodeTextValue = spanElement.getAttribute("data-code-text")
@@ -48,7 +48,6 @@ const InlineRight = (prop) => {
   const currentLine = divElement.getAttribute("data-line-number")
   //console.log(currentLine)
   //console.log(currentString);
-  
 
   function showCommentHandler(e) {
     //open the side bar and pass the current code and line number to the sidebar
@@ -63,32 +62,20 @@ const InlineRight = (prop) => {
   }
 
   function mouseLeaveHandler(e) {
-    anchorElement.style.backgroundColor = "white"
+    anchorElement.style.backgroundColor = "initial"
   }
 
   return (
     <div style={{ pointerEvents: "auto" }} className="mr-4">
       <button
+        className={
+          "opacity-0 text-xxs hover:opacity-100 transition ease-in-out delay-50  "
+        }
         type="button"
         onClick={showCommentHandler}
         onMouseEnter={mouseEnterHandler}
         onMouseLeave={mouseLeaveHandler}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          className="w-5 h-5">
-          <path
-            fillRule="evenodd"
-            d="M3 4.25A2.25 2.25 0 015.25 2h5.5A2.25 2.25 0 0113 4.25v2a.75.75 0 01-1.5 0v-2a.75.75 0 00-.75-.75h-5.5a.75.75 0 00-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 00.75-.75v-2a.75.75 0 011.5 0v2A2.25 2.25 0 0110.75 18h-5.5A2.25 2.25 0 013 15.75V4.25z"
-            clipRule="evenodd"
-          />
-          <path
-            fillRule="evenodd"
-            d="M6 10a.75.75 0 01.75-.75h9.546l-1.048-.943a.75.75 0 111.004-1.114l2.5 2.25a.75.75 0 010 1.114l-2.5 2.25a.75.75 0 11-1.004-1.114l1.048-.943H6.75A.75.75 0 016 10z"
-            clipRule="evenodd"
-          />
-        </svg>
+        <img src={button4} alt="button 4" width="20" />
       </button>
     </div>
   )

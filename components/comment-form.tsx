@@ -1,18 +1,10 @@
 import axios from "axios"
-import cssText from "data-text:~style.css"
 import { useEffect, useState } from "react"
 
 import { useStorage } from "@plasmohq/storage/hook"
 
 import CommentComponet from "./comment"
 import ExplanationComponet from "./explanation"
-
-//tailwind css
-export const getStyle = () => {
-  const style = document.createElement("style")
-  style.textContent = cssText
-  return style
-}
 
 function CommentForm({
   explanationId,
@@ -27,7 +19,7 @@ function CommentForm({
   const [commentValue, setCommentValue] = useState("")
   const [currentSession] = useStorage("currentSession")
   const [errorMsg, setErrorMsg] = useState("")
-
+  const [currentCode] = useStorage("currentCode")
   useEffect(() => {
     //receive the comment list under current explanation
     axios
@@ -117,15 +109,37 @@ function CommentForm({
   }
   return (
     <div>
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        onClick={() => {
-          setShowComments(false)
-        }}>
-        {" "}
-        &lt;
-      </button>
-      <div className="w-full bg-white rounded-lg border p-2 my-4">
+      <div className="w-full bg-white rounded-lg p-4 my-1 ">
+        <h2 className="font-bold text-black">Code</h2>
+        <br></br>
+        <div className="bg-gray-100 p-4 overflow-x-auto">
+          <p className="text-gray-700 font-mono">{currentCode}</p>
+        </div>
+
+        <br></br>
+        <button
+          className="flex text-xs background-transparent text-[#0258d7] hover:text-blue-900  font-bold mt-2"
+          onClick={() => {
+            setShowComments(false)
+          }}>
+          <svg
+            className="h-4 w-4 text-[#0258d7]"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <line x1="5" y1="12" x2="9" y2="16" />
+            <line x1="5" y1="12" x2="9" y2="8" />
+          </svg>{" "}
+          Back
+        </button>
+
         <ExplanationComponet
           showComments={showComments}
           setShowComments={setShowComments}
@@ -137,8 +151,9 @@ function CommentForm({
           setExplanationIndex={() => {
             return explanationIndex
           }}></ExplanationComponet>
-        <h3 className="font-bold">Discussion</h3>
-
+      </div>
+      <h3 className="font-bold mt-2">Discussion</h3>
+      <div >
         <div className="flex flex-col">
           {commentList.map((comment, key) => (
             <CommentComponet
@@ -153,7 +168,10 @@ function CommentForm({
         <form onSubmit={postCommentHandler}>
           <div className="w-full px-3 my-2">
             <textarea
-              className="bg-gray-100 rounded border border-gray-400 leading-normal resize-none w-full h-20 py-2 px-3 font-medium placeholder-gray-700 focus:outline-none focus:bg-white"
+              className="block p-2.5 w-full h-20 text-sm text-gray-900 bg-gray-50 rounded-lg 
+            border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 
+            dark:border-gray-600 dark:placeholder-gray-400 dark:text-white 
+            dark:focus:ring-blue-500 dark:focus:border-blue-500"
               name="body"
               placeholder="Type Your Comment"
               onKeyDown={keyDownHandler}
@@ -167,7 +185,7 @@ function CommentForm({
           <div className="w-full flex justify-end px-3">
             <input
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-[#0258d7] hover:bg-blue-900 text-white font-bold py-2 px-4 rounded"
               value="Post Comment"
             />
           </div>

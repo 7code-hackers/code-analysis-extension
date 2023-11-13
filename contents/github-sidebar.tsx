@@ -64,6 +64,7 @@ const Sidebar = () => {
       .catch(function (error) {
         console.log(error.config)
       })
+    setShowComments(false)
   }, [shown])
 
   function editHandler(explanationIndex, newCont, explanationId) {
@@ -110,57 +111,53 @@ const Sidebar = () => {
       id="sidebar"
       className={
         (shown ? "open" : "closed") +
-        " overflow-y-auto p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+        " overflow-y-auto p-4 bg-slate-50 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
       }>
-      <p>Code</p>
-      <br></br>
-      <div>{currentCode}</div>
+      <div className="">
+        {showComments ? (
+          <CommentForm
+            showComments={showComments}
+            setShowComments={setShowComments}
+            currentExplanation={currentExplanationList[explanationIndex]}
+            explanationId={explanationId}
+            removeHandler={removeHandler}
+            editHandler={editHandler}
+            explanationIndex={explanationIndex}></CommentForm>
+        ) : (
+          <ExplanationForm
+            shown={shown}
+            showComments={showComments}
+            setShowComments={setShowComments}
+            setexplanationId={setexplanationId}
+            currentExplanationList={currentExplanationList}
+            setCurrentExplanationList={setCurrentExplanationList}
+            setExplanationIndex={setExplanationIndex}
+            editHandler={editHandler}
+            removeHandler={removeHandler}></ExplanationForm>
+        )}
 
-      <br></br>
-
-      {showComments ? (
-        <CommentForm
-        showComments={showComments}
-          setShowComments={setShowComments}
-          currentExplanation={currentExplanationList[explanationIndex]}
-          explanationId={explanationId}
-          removeHandler={removeHandler}
-          editHandler={editHandler}
-          explanationIndex={explanationIndex}></CommentForm>
-      ) : (
-        <ExplanationForm
-          shown={shown}
-          showComments={showComments}
-          setShowComments={setShowComments}
-          setexplanationId={setexplanationId}
-          currentExplanationList={currentExplanationList}
-          setCurrentExplanationList={setCurrentExplanationList}
-          setExplanationIndex={setExplanationIndex}
-          editHandler={editHandler}
-          removeHandler={removeHandler}></ExplanationForm>
-      )}
-
-      <button
-        type="button"
-        onClick={() => setShown(false)}
-        className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
-        <span className="sr-only">Close menu</span>
-        {/* <!-- Heroicon name: outline/x --> */}
-        <svg
-          className="h-6 w-6"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          aria-hidden="true">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
-      </button>
+        <button
+          type="button"
+          onClick={() => setShown(false)}
+          className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+          <span className="sr-only">Close menu</span>
+          {/* <!-- Heroicon name: outline/x --> */}
+          <svg
+            className="h-6 w-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
     </div>
   )
 }
