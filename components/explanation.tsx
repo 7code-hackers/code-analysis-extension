@@ -1,5 +1,8 @@
+import axios from "axios"
 import dayjs from "dayjs"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+
+import { useStorage } from "@plasmohq/storage/hook"
 
 function ExplanationComponet({
   explanation,
@@ -9,14 +12,110 @@ function ExplanationComponet({
   setShowComments,
   setExplanationIndex
 }) {
-  console.log(explanation.content)
+  //console.log(explanation.content)
+  const defaulUser = {
+    id: "dfu",
+    name: "defaultUser",
+    password: "$2b$10$1TTJ/9hOd3W0t8d4vEqXvezWLKdlW31Pr.KwMIfCk8VFk0MgpZZ2.",
+    email: "user1214@email.com",
+    createdAt: "2023-12-15T01:04:50.000Z",
+    updatedAt: "2023-12-15T01:04:50.000Z"
+  }
   const [editMode, setEditMode] = useState(false)
   const [editValue, setEditvalue] = useState("")
+  const [user, setUser] = useState(defaulUser)
+  const [voteNumber, setVoteNumber] = useState(
+    explanation.upVote - explanation.downVote
+  )
+  const [currentUser] = useStorage("currentUser", (v) =>
+    v === undefined ? defaulUser : v
+  )
+  const [isVoted, setIsVoted] = useState(false)
+  function voteHandler(isUpvote) {
+    if (isUpvote) {
+      axios
+        .post(
+          `${process.env.PLASMO_PUBLIC_BACKEND_URL}vote`,
+          {
+            userId: currentUser.id,
+            explanationId: explanation.id,
+            isUpVote: true
+          },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          console.log(res)
+          setVoteNumber((pre) => pre + 1)
+        })
+        .catch(function (error) {
+          console.log(error.config)
+        })
+    } else {
+      axios
+        .post(
+          `${process.env.PLASMO_PUBLIC_BACKEND_URL}vote`,
+          {
+            userId: currentUser.id,
+            explanationId: explanation.id,
+            isUpVote: false
+          },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          console.log(res)
+          setVoteNumber((pre) => pre - 1)
+        })
+        .catch(function (error) {
+          console.log(error.config)
+        })
+    }
+  }
 
+  useEffect(() => {
+    // const savedSession = JSON.parse(localStorage.getItem("currentSession"))
+    // console.log("current session " + savedSession)
+    axios
+      .get(
+        `${process.env.PLASMO_PUBLIC_BACKEND_URL}user/${explanation.userId}`,
+        {
+          withCredentials: true
+        }
+      )
+      .then((res) => {
+        //get user infro of the owner of the explanation
+        setUser(res.data)
+        console.log(res)
+        console.log(res.data.name)
+      })
+      .catch(function (error) {
+        console.log(error.config)
+      })
+
+    axios
+      .get(
+        `${process.env.PLASMO_PUBLIC_BACKEND_URL}vote/user/${currentUser.id}/explanation/${explanation.id}`,
+        {
+          withCredentials: true
+        }
+      )
+      .then((res) => {
+        //
+        setIsVoted(true)
+        console.log(res)
+      })
+      .catch(function (error) {
+        console.log(error.config)
+      })
+  }, [])
   return (
     <div>
-      <div className="flex justify-between border rounded-md p-3 my-3">
-        <div className="w-full p-3">
+      <div className="flex justify-between border my-3">
+        <div className="flex flex-col bg-slate-50 p-3">
+          <button onClick={() => voteHandler(true)}>+</button>
+          {voteNumber}
+          <button onClick={() => voteHandler(false)}>-</button>
+        </div>
+        <div className="w-full m-3 p-3">
           {editMode ? (
             <div>
               <form
@@ -34,7 +133,7 @@ function ExplanationComponet({
                             "
                   />
                   <div>
-                    <h3 className="font-bold">User</h3>
+                    <h3 className="font-bold">{user.name}</h3>
                     <p className="text-xs text-slate-500">
                       {dayjs(explanation.createdAt).format("YYYY/MM/DD HH:mm")}
                     </p>
@@ -126,34 +225,35 @@ function ExplanationComponet({
                 />
 
                 <div>
-                  <h3 className="font-bold">User</h3>
+                  <h3 className="font-bold">{user.name}</h3>
                   <p className="text-xs text-slate-500">
                     {dayjs(explanation.createdAt).format("YYYY/MM/DD HH:mm")}
                   </p>
                 </div>
-                <button
-                  onClick={() => {
-                    setEditMode(!editMode)
-                    setEditvalue(explanation.content)
-                  }}
-                  className="text-xs bg-gray-100 hover:bg-gray-200  font-bold p-1 ml-auto rounded">
-                  <svg
-                    className="h-4 w-4 text-blue-500"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    stroke-width="2"
-                    stroke="currentColor"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round">
-                    {" "}
-                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                    <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />{" "}
-                    <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
-                  </svg>
-                </button>
-                {!showComments && (
+                {currentUser.id == user.id && (
+                  <button
+                    onClick={() => {
+                      setEditMode(!editMode)
+                      setEditvalue(explanation.content)
+                    }}
+                    className="text-xs bg-gray-100 hover:bg-gray-200  font-bold p-1 ml-auto rounded">
+                    <svg
+                      className="h-4 w-4 text-blue-500"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      stroke-width="2"
+                      stroke="currentColor"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path stroke="none" d="M0 0h24v24H0z" />
+                      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+                      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+                    </svg>
+                  </button>
+                )}
+                {!showComments && currentUser.id == user.id && (
                   <button
                     onClick={() => onRemove(explanation.id)}
                     className="text-xs bg-gray-100 hover:bg-gray-200 font-bold p-1  rounded m-1">

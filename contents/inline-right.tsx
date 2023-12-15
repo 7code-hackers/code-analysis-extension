@@ -39,7 +39,7 @@ const InlineRight = (prop) => {
   for (let j = 0; j < spanElements.length; j++) {
     const spanElement = spanElements[j]
     const dataCodeTextValue = spanElement.getAttribute("data-code-text")
-    currentString += dataCodeTextValue
+    if (dataCodeTextValue) currentString += dataCodeTextValue
   }
 
   //get the current line

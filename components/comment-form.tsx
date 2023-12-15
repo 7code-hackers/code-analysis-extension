@@ -20,6 +20,7 @@ function CommentForm({
   const [currentSession] = useStorage("currentSession")
   const [errorMsg, setErrorMsg] = useState("")
   const [currentCode] = useStorage("currentCode")
+  const [currentUser] = useStorage("currentUser")
   useEffect(() => {
     //receive the comment list under current explanation
     axios
@@ -48,7 +49,7 @@ function CommentForm({
         .post(
           `${process.env.PLASMO_PUBLIC_BACKEND_URL}comment`,
           {
-            userId: "afd7d929-df59-444e-a7af-56c96b48df01",
+            userId: currentUser.id,
             content: commentValue,
             explanationId: currentExplanation.id
           },
@@ -153,7 +154,7 @@ function CommentForm({
           }}></ExplanationComponet>
       </div>
       <h3 className="font-bold mt-2">Discussion</h3>
-      <div >
+      <div>
         <div className="flex flex-col">
           {commentList.map((comment, key) => (
             <CommentComponet

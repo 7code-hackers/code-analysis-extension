@@ -20,6 +20,8 @@ function ExplanationForm({
   const currentUrl = window.location.href
   const [currentCodeLine] = useStorage("currentCodeLine")
   const [currentCode] = useStorage("currentCode")
+  const [currentUser] = useStorage("currentUser")
+  console.log(currentUser)
   function keyDownHandler(e) {
     e.stopPropagation()
   }
@@ -31,7 +33,7 @@ function ExplanationForm({
       .post(
         `${process.env.PLASMO_PUBLIC_BACKEND_URL}explanation`,
         {
-          userId: "afd7d929-df59-444e-a7af-56c96b48df01",
+          userId: currentUser.id,
           content: explanationValue,
           visibility: "public",
           fileUrl: currentUrl,
@@ -68,7 +70,7 @@ function ExplanationForm({
           <ExplanationComponet
             showComments={showComments}
             setShowComments={setShowComments}
-            onRemove={(explanationID)=>removeHandler(index,explanationID)}
+            onRemove={(explanationID) => removeHandler(index, explanationID)}
             onEdit={(newCont, explanationID) =>
               editHandler(index, newCont, explanationID)
             }
