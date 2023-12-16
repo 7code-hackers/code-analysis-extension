@@ -30,7 +30,7 @@ function ExplanationComponet({
   const [currentUser] = useStorage("currentUser", (v) =>
     v === undefined ? defaulUser : v
   )
-  const [isVoted, setIsVoted] = useState(false)
+  const [isUpVoted, setIsUpVoted] = useState(explanation.upVotedByUser)
   function voteHandler(isUpvote) {
     if (isUpvote) {
       axios
@@ -46,6 +46,13 @@ function ExplanationComponet({
         .then((res) => {
           console.log(res)
           setVoteNumber((pre) => pre + 1)
+          setIsUpVoted((pre) => {
+            if (pre == false) {
+              return null
+            } else {
+              return true
+            }
+          })
         })
         .catch(function (error) {
           console.log(error.config)
@@ -64,6 +71,13 @@ function ExplanationComponet({
         .then((res) => {
           console.log(res)
           setVoteNumber((pre) => pre - 1)
+          setIsUpVoted((pre) => {
+            if (pre == null) {
+              return false
+            } else {
+              return null
+            }
+          })
         })
         .catch(function (error) {
           console.log(error.config)
@@ -91,29 +105,66 @@ function ExplanationComponet({
         console.log(error.config)
       })
 
-    axios
-      .get(
-        `${process.env.PLASMO_PUBLIC_BACKEND_URL}vote/user/${currentUser.id}/explanation/${explanation.id}`,
-        {
-          withCredentials: true
-        }
-      )
-      .then((res) => {
-        //
-        setIsVoted(true)
-        console.log(res)
-      })
-      .catch(function (error) {
-        console.log(error.config)
-      })
+    // axios
+    //   .get(
+    //     `${process.env.PLASMO_PUBLIC_BACKEND_URL}vote/user/${currentUser.id}/explanation/${explanation.id}`,
+    //     {
+    //       withCredentials: true
+    //     }
+    //   )
+    //   .then((res) => {
+    //     //
+    //     setIsVoted(true)
+    //     console.log(res)
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error.config)
+    //   })
   }, [])
   return (
     <div>
       <div className="flex justify-between border my-3">
-        <div className="flex flex-col bg-slate-50 p-3">
-          <button onClick={() => voteHandler(true)}>+</button>
-          {voteNumber}
-          <button onClick={() => voteHandler(false)}>-</button>
+        <div className="flex flex-col items-center bg-slate-50 p-3">
+          <button className="" onClick={() => voteHandler(true)} disabled={isUpVoted}>
+            <svg
+              className={(isUpVoted?"text-red-500 ":"text-blue-500 hover:text-blue-700 ")+"h-8 w-8"}
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" />
+              <circle cx="12" cy="12" r="9" />
+              <line x1="12" y1="8" x2="8" y2="12" />
+              <line x1="12" y1="8" x2="12" y2="16" />
+              <line x1="16" y1="12" x2="12" y2="8" />
+            </svg>
+          </button>
+          <p>{voteNumber}</p>
+          
+          <button
+            onClick={() => voteHandler(false)}
+            disabled={isUpVoted == false}>
+            <svg
+              className={(isUpVoted==false?"text-red-500 ":"text-blue-500 hover:text-blue-700 ")+"h-8 w-8"}
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" />
+              <circle cx="12" cy="12" r="9" />
+              <line x1="8" y1="12" x2="12" y2="16" />
+              <line x1="12" y1="8" x2="12" y2="16" />
+              <line x1="16" y1="12" x2="12" y2="16" />
+            </svg>
+          </button>
         </div>
         <div className="w-full m-3 p-3">
           {editMode ? (

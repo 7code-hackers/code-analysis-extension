@@ -38,6 +38,17 @@ const Sidebar = () => {
   const currentUrl = window.location.href
   const [currentCodeLine] = useStorage("currentCodeLine")
   const [explanationIndex, setExplanationIndex] = useState(0)
+  const defaulUser = {
+    id: "dfu",
+    name: "defaultUser",
+    password: "$2b$10$1TTJ/9hOd3W0t8d4vEqXvezWLKdlW31Pr.KwMIfCk8VFk0MgpZZ2.",
+    email: "user1214@email.com",
+    createdAt: "2023-12-15T01:04:50.000Z",
+    updatedAt: "2023-12-15T01:04:50.000Z"
+  }
+  const [currentUser] = useStorage("currentUser", (v) =>
+    v === undefined ? defaulUser : v
+  )
   function keyDownHandler(e) {
     e.stopPropagation()
   }
@@ -48,7 +59,7 @@ const Sidebar = () => {
       .get(
         `${
           process.env.PLASMO_PUBLIC_BACKEND_URL
-        }explanations/file/${encodeURIComponent(currentUrl)}`,
+        }explanations/file/${encodeURIComponent(currentUrl)}/${currentUser.id}`,
         {
           withCredentials: true
         }
